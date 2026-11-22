@@ -14,9 +14,10 @@ const path  = require('path');
 // 서비스/.env 에 KEY=VALUE 한 줄씩 넣어두면 자동으로 읽음.
 // .env 는 .gitignore 로 깃에서 제외됨 → 키·비번이 코드/깃에 안 박힘.
 // (이미 설정된 환경변수가 우선 — Render 등 클라우드에선 .env 없이 환경변수로)
+// web/.env → 저장소 루트 .env 순서로 읽음 (먼저 읽힌 값·기존 환경변수가 우선)
 try{
-  const envPath = path.join(__dirname, '.env');
-  if(fs.existsSync(envPath)){
+  for(const envPath of [path.join(__dirname, '.env'), path.join(__dirname, '..', '.env')]){
+    if(!fs.existsSync(envPath)) continue;
     fs.readFileSync(envPath,'utf8').replace(/^﻿/,'').split(/\r?\n/).forEach(line=>{
       const m = line.match(/^\s*([A-Za-z0-9_]+)\s*=\s*(.*)$/);
       if(m && !process.env[m[1]]) process.env[m[1]] = m[2].trim().replace(/^["']|["']$/g,'');
@@ -49,7 +50,7 @@ const GEMINI_CHAIN   = (process.env.GEMINI_MODELS
   .split(',').map(s=>s.trim()).filter(Boolean)
   .filter((m,i,a)=>a.indexOf(m)===i);
 const ANTHROPIC_KEY  = process.env.ANTHROPIC_API_KEY || '';
-const ANTHROPIC_MODEL= process.env.ANTHROPIC_MODEL || 'claude-opus-5'; // 비용 아끼려면 claude-haiku-4-5
+const ANTHROPIC_MODEL= process.env.ANTHROPIC_MODEL || 'claude-opus-5-5'; // 비용 아끼려면 claude-haiku-5-5
 const LLM_PROVIDER   = process.env.LLM_PROVIDER || (ANTHROPIC_KEY ? 'anthropic' : (GEMINI_KEY ? 'gemini' : 'none'));
 const LLM_ON         = LLM_PROVIDER==='anthropic' ? !!ANTHROPIC_KEY
                      : LLM_PROVIDER==='gemini'    ? !!GEMINI_KEY : false;

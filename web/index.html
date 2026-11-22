@@ -646,7 +646,7 @@ function openRobot(by){
   document.querySelector('#modal .sh').firstChild.textContent = captureBy==='direct' ? '📷 직접 촬영 ' : '🤖 로봇 촬영 ';
   document.getElementById('mLoc').textContent=(CURWORK&&CURWORK.area)||'HPC Stg4 · BLD-017';
   // 정비사 화면은 '실제 촬영 결과'를 보는 곳이므로 시뮬 영상을 넣지 않는다.
-  //   (시뮬 영상은 로봇 HUD robot.html 에서만 재생 - 발표·설명용)
+  //   (시뮬 영상은 robot-sim/ 의 시연 영상으로 별도 제공 - 발표·설명용)
   simVideo(false);
   const msg = captureBy==='direct' ? '촬영·업로드 중…' : '로봇 이동·조명·촬영 중…';
   document.getElementById('mBody').innerHTML='<div style="color:var(--dim2);font-size:12.5px;padding:12px"><span class="spin"></span> '+msg+'</div>';
@@ -826,7 +826,12 @@ async function askServer(term){
 }
 function renderBot(a){
   if(!a) return '<div class="botmsg">답변을 만들지 못했어요.</div>';
-  const text=(a.text||'').replace(/\n/g,'<br>');
+  // LLM은 강조를 **굵게** 로 보낸다. 그대로 두면 화면에 별표가 찍힌다.
+  //   먼저 HTML 특수문자를 막고, 그다음 굵게만 태그로 바꾼다.
+  const text=(a.text||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
+    .replace(/\n/g,'<br>');
   const chips=(a.chips||[]).map(c=>'<span class="rchip" onclick="askServer(\''+c+' '+lastPart+'\')">'+c+'</span>').join('');
   return '<div class="botmsg">'+text+(chips?'<div class="rchips">'+chips+'</div>':'')+'</div>';
 }
