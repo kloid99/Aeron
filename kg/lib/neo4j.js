@@ -28,13 +28,21 @@ function cypher(statement, parameters = {}) {
       let d = '';
       res.on('data', c => { d += c; });
       res.on('end', () => {
-        try {
-          const j = JSON.parse(d);
-          if (j.errors && j.errors.length) return reject(new Error(j.errors[0].message));
-          const fields = (j.data && j.data.fields) || [];
-          const values = (j.data && j.data.values) || [];
-          resolve(values.map(v => Object.fromEntries(fields.map((k, i) => [k, v[i]]))));
-        } catch (e) { reject(new Error('Neo4j 응답 파싱 실패: ' + d.slice(0, 200))); }
+        const status = res.statusCode;
+        let j;
+        try { j = JSON.parse(d); } catch (e) {
+          return reject(new Error(status >= 200 && status < 300
+            ? 'Neo4j 응답 파싱 실패: ' + d.slice(0, 200)
+            : 'HTTP ' + status + ': ' + d.slice(0, 200)));
+        }
+        const err = j && j.errors && j.errors[0];
+        if (status < 200 || status > 299) {
+          return reject(new Error('HTTP ' + status + ': ' + (err ? err.message : d.slice(0, 200))));
+        }
+        if (err) return reject(new Error(err.message));
+        const fields = (j.data && j.data.fields) || [];
+        const values = (j.data && j.data.values) || [];
+        resolve(values.map(v => Object.fromEntries(fields.map((k, i) => [k, v[i]]))));
       });
     });
     req.on('error', reject);
