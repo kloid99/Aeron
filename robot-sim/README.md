@@ -28,12 +28,35 @@ C:\robot_sim_source\                      ← 이렇게
 
 pybullet은 Windows용 휠이 없습니다(Python 3.10~3.13 모두 확인). 그래서 Windows에서 직접 설치하려면 Microsoft C++ Build Tools가 필요합니다. Docker를 쓰면 이 문제를 피할 수 있습니다.
 
+먼저 `robot-sim` 폴더로 이동합니다.
+
 ```bash
-docker build -t aeron-robot-sim robot-sim
-MSYS_NO_PATHCONV=1 docker run --rm -v "D:/STUDY/Aircraft/Aeron/robot-sim:/sim" aeron-robot-sim
+cd robot-sim
+docker build -t aeron-robot-sim .
 ```
 
-두 번째 명령은 `verify_simulation.py`를 실행하고, 결과를 호스트의 `verify_result.txt`에 씁니다.
+이미지에는 의존성만 들어 있고, 소스 코드는 들어 있지 않습니다. 그래서 `-v`로 현재 폴더를 컨테이너의 `/sim`에 연결해야 합니다. `-v`를 빼면 실행이 실패합니다. 기본 명령은 `verify_simulation.py`를 실행하고, 결과를 호스트의 `verify_result.txt`에 씁니다. 셸에 맞는 명령을 고르세요.
+
+```bash
+# bash / macOS / Linux
+docker run --rm -v "$(pwd):/sim" aeron-robot-sim
+
+# PowerShell
+docker run --rm -v "${PWD}:/sim" aeron-robot-sim
+
+# cmd
+docker run --rm -v "%cd%:/sim" aeron-robot-sim
+```
+
+Git Bash에서는 명령 앞에 `MSYS_NO_PATHCONV=1`을 붙여 실행하세요. 경로 변환을 막아 줍니다.
+
+다른 스크립트도 같은 방식으로 실행할 수 있습니다. 예를 들어 실행 로그는 다음 명령으로 출력합니다.
+
+```bash
+docker run --rm -v "$(pwd):/sim" aeron-robot-sim python print_execution_log.py
+```
+
+컨테이너에는 화면이 없으므로 `--render`와 3D 창 미리보기(`sim_physical_ai.py`)는 Docker에서 동작하지 않습니다. 이 명령들은 직접 설치한 Python 환경에서 실행하세요.
 
 ### Linux / macOS에서 직접 실행
 
