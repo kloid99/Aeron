@@ -5,7 +5,7 @@
 //         스키마 변경도 서버 코드 변경도 없다.
 //
 //   실행:
-//     node seed/run_cypher.js seed/d008_skin.cypher
+//     node kg/run_cypher.js kg/d008_skin.cypher
 //     (접속 정보는 환경변수 NEO4J_URI / NEO4J_USER / NEO4J_PW / NEO4J_DATABASE)
 //
 //   원칙 — d008_blade.cypher 와 동일

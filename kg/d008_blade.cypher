@@ -3,8 +3,8 @@
 //   대표 시나리오: 엔진 오버홀 중 분해된 HPC 블레이드 외관 손상 검사
 //
 //   실행:
-//     cypher-shell -a $NEO4J_URI -u $NEO4J_USER -p $NEO4J_PW -f seed/d008_blade.cypher
-//     이어서:  node seed/load_sdr_blade.js <neo4j비밀번호>
+//     cypher-shell -a $NEO4J_URI -u $NEO4J_USER -p $NEO4J_PW -f kg/d008_blade.cypher
+//     이어서:  node kg/load_sdr_blade.js <neo4j비밀번호>
 //
 //   원칙
 //   1. 기존 SKIN(ATA 53) 서브그래프는 삭제하지 않는다 — P1 로드맵 자산이며

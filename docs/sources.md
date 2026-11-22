@@ -30,6 +30,8 @@ FAA 핸드북 개별 페이지 주소가 확인 시점(2026-11-22)에 열리지 
 | 결함 사진 6장 | `web/assets/defects/` | 원 팀 자료 — 원출처 기록 없음(확인되면 이 표를 갱신) |
 | Indy7 URDF·메시, HPC 블레이드 OBJ | `robot-sim/` | `robot-sim/ASSETS_LICENSE.md` |
 
-## 발표·영상 (저장소 밖)
-- 최종 발표자료 PDF: `docs/발표자료.pdf` (원본 그대로)
+## 발표자료 (저장소 안)
+- 최종 발표자료 PDF: `docs/AERON_final_presentation.pdf` (원본 그대로)
+
+## 영상 (저장소 밖)
 - 발표 영상·숏 영상: 용량 문제로 저장소에 넣지 않음

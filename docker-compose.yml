@@ -9,5 +9,11 @@ services:
       NEO4J_AUTH: neo4j/${NEO4J_PW:-aeron-local-pw}
     volumes:
       - neo4j-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:7474 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
 volumes:
   neo4j-data: {}

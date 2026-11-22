@@ -56,7 +56,7 @@ Git Bash에서는 명령 앞에 `MSYS_NO_PATHCONV=1`을 붙여 실행하세요. 
 docker run --rm -v "$(pwd):/sim" aeron-robot-sim python print_execution_log.py
 ```
 
-컨테이너에는 화면이 없으므로 `--render`와 3D 창 미리보기(`sim_physical_ai.py`)는 Docker에서 동작하지 않습니다. 이 명령들은 직접 설치한 Python 환경에서 실행하세요.
+컨테이너에는 화면이 없으므로 3D 창 미리보기(`--render` 없이 `sim_physical_ai.py` 실행)는 Docker에서 동작하지 않습니다. `--render`는 화면 없이(p.DIRECT) 프레임만 만들므로 Docker에서도 실행됩니다.
 
 ### Linux / macOS에서 직접 실행
 
@@ -76,9 +76,9 @@ python3.11 -m venv .venv
 | 충돌·관통 전수 검증 | `py -3.11 verify_simulation.py` |
 | 실행 로그(상태 전이) 출력 | `py -3.11 print_execution_log.py` |
 
+주의: `verify_simulation.py`와 `print_execution_log.py`는 저장소에 포함된 `verify_result.txt`를 덮어씁니다. `git checkout -- verify_result.txt`로 되돌릴 수 있습니다.
+
 전체 렌더는 1080p 기준 약 20분 걸립니다.
-VS Code에서 실행할 경우 `.vscode/launch.json`이 포함되어 있습니다
-(인터프리터를 Python 3.11로 지정해야 합니다).
 
 ---
 

@@ -19,7 +19,7 @@ KT AIVLE School 9기 빅프로젝트 · 수도권 01반 01조 · 제안사 KT + 
 
 ```bash
 cp .env.example .env      # Windows cmd: copy .env.example .env
-docker compose up -d
+docker compose up -d --wait
 node kg/build_all.js
 node web/server.js
 ```
