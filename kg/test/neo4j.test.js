@@ -28,3 +28,17 @@ test('2xx가 아닌 응답은 HTTP 상태와 함께 reject 된다', async () => 
     srv.close();
   }
 });
+
+test('2xx 응답 본문이 null 이면 reject 된다(멈추지 않는다)', async () => {
+  const http = require('http');
+  const srv = http.createServer((q, r) => { r.statusCode = 200; r.end('null'); });
+  await new Promise(r => srv.listen(0, '127.0.0.1', r));
+  const prev = process.env.NEO4J_URI;
+  process.env.NEO4J_URI = 'http://127.0.0.1:' + srv.address().port;
+  try {
+    await assert.rejects(cypher('RETURN 1'), /응답 형식 오류/);
+  } finally {
+    if (prev === undefined) delete process.env.NEO4J_URI; else process.env.NEO4J_URI = prev;
+    srv.close();
+  }
+});

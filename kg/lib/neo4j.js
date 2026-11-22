@@ -40,9 +40,12 @@ function cypher(statement, parameters = {}) {
           return reject(new Error('HTTP ' + status + ': ' + (err ? err.message : d.slice(0, 200))));
         }
         if (err) return reject(new Error(err.message));
-        const fields = (j.data && j.data.fields) || [];
-        const values = (j.data && j.data.values) || [];
-        resolve(values.map(v => Object.fromEntries(fields.map((k, i) => [k, v[i]]))));
+        if (j === null || typeof j !== 'object') return reject(new Error('Neo4j 응답 형식 오류: ' + d.slice(0, 200)));
+        try {
+          const fields = (j.data && j.data.fields) || [];
+          const values = (j.data && j.data.values) || [];
+          resolve(values.map(v => Object.fromEntries(fields.map((k, i) => [k, v[i]]))));
+        } catch (e) { reject(e); }
       });
     });
     req.on('error', reject);
