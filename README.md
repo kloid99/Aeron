@@ -12,7 +12,7 @@ KT AIVLE School 9기 빅프로젝트 · 수도권 01반 01조 · 제안사 KT + 
 | `kg/` | Neo4j 지식그래프 재구축 스크립트와 검증 |
 | `robot-sim/` | Moby + Indy7 블레이드 검사 시뮬레이션 (Python 3.11, PyBullet) |
 | `data/` | FAA SDR 2026, JASC 코드표 |
-| `docs/` | 발표자료 PDF, 아키텍처, 데이터 정의서, 시나리오, 판단 규칙, 자료 출처 |
+| `docs/` | 아키텍처, 데이터 정의서, 시나리오, 판단 규칙, 자료 출처 |
 
 ## 빠른 실행
 필요: Node.js 18+, Docker Desktop
