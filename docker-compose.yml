@@ -1,0 +1,13 @@
+services:
+  neo4j:
+    image: neo4j:5.26
+    container_name: aeron-neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PW:-aeron-local-pw}
+    volumes:
+      - neo4j-data:/data
+volumes:
+  neo4j-data: {}
