@@ -114,5 +114,6 @@ function splitStatements(text) {
     }
   }
   console.log('\n\n  완료 — 성공 ' + ok + ' / 실패 ' + fail);
+  if (fail > 0) process.exitCode = 1;
   if (fail === 0) console.log('  다음 단계:  node seed/load_sdr_blade.js <비밀번호>\n');
 })();
