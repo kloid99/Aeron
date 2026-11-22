@@ -24,13 +24,27 @@ C:\robot_sim_source\                      ← 이렇게
 
 ## 실행 방법
 
-**환경**: Python 3.11 (3.14는 pybullet 휠 없음)
+### Docker로 실행 (Windows 권장)
+
+pybullet은 Windows용 휠이 없습니다(Python 3.10~3.13 모두 확인). 그래서 Windows에서 직접 설치하려면 Microsoft C++ Build Tools가 필요합니다. Docker를 쓰면 이 문제를 피할 수 있습니다.
 
 ```bash
-pip install pybullet numpy pillow imageio-ffmpeg
+docker build -t aeron-robot-sim robot-sim
+MSYS_NO_PATHCONV=1 docker run --rm -v "D:/STUDY/Aircraft/Aeron/robot-sim:/sim" aeron-robot-sim
 ```
 
-| 목적 | 명령 |
+두 번째 명령은 `verify_simulation.py`를 실행하고, 결과를 호스트의 `verify_result.txt`에 씁니다.
+
+### Linux / macOS에서 직접 실행
+
+아래 `py -3.11 ...` 명령은 Linux와 macOS에서 `python3.11 ...`로 바꿔 실행하세요. Windows에서는 Docker 방법을 쓰세요.
+
+```bash
+python3.11 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+```
+
+| 목적 | 명령 (Windows 직접 실행 기준. Linux/macOS는 `py -3.11`을 `python3.11`로 바꿔 실행) |
 |---|---|
 | 3D 창으로 미리보기 | `py -3.11 sim_physical_ai.py` |
 | 프레임 렌더 (frames/*.png) | `py -3.11 sim_physical_ai.py --render` |
