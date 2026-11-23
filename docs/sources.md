@@ -27,8 +27,11 @@ FAA 핸드북 개별 페이지 주소가 확인 시점(2026-11-22)에 열리지 
 ## 이미지·3D 자산
 | 자료 | 위치 | 출처·라이선스 |
 |---|---|---|
-| 결함 사진 6장 | `web/assets/defects/` | 원 팀 자료 — 원출처 기록 없음(확인되면 이 표를 갱신) |
+| 결함 사진 5장 (`crack-1`, `dent-1`, `dent-2`, `corrosion-1`, `damage-1`) | `web/assets/defects/` | Li et al., *Deep learning-based defects detection of certain aero-engine blades and vanes with DDSC-YOLOv5s*, Scientific Reports 12, 13067 (2022), Figure 14. https://doi.org/10.1038/s41598-022-17340-7 · **CC BY 4.0** |
+| 정상 블레이드 사진 1장 (`normal-1`) | `web/assets/defects/` | Zhang et al., AeBAD (Aero-engine Blade Anomaly Detection). https://github.com/zhangzilongc/MMR · **CC BY 4.0** |
 | Indy7 URDF·메시, HPC 블레이드 OBJ | `robot-sim/` | `robot-sim/ASSETS_LICENSE.md` |
+
+결함 사진은 CC BY 4.0이라 출처 표기와 변경 내역 표시가 필요합니다. 원본의 탐지 박스·라벨을 지우고 800×450으로 맞췄으며, `normal-1`은 세로 원본을 눕혔습니다. `corrosion-1`의 원본 라벨은 erosion(침식), `damage-1`은 TBC missing(코팅 손실)입니다. 파일별 원본 라벨·부위와 가공 내역은 [`web/assets/defects/README.md`](../web/assets/defects/README.md)에 있습니다.
 
 ## 발표자료·영상 (저장소 밖)
 - 최종 발표자료 PDF, 발표 영상·숏 영상: 저장소에 넣지 않음
