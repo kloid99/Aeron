@@ -1,5 +1,9 @@
 # Physical AI 기반 항공정비 작업 실행·운영 체계 (AERON)
 
+> **데모 바로 보기: https://aeron-vadw.onrender.com**
+> 로그인 화면에서 정비사나 관리자를 골라 바로 들어가면 됩니다(시연용 계정이 채워져 있음).
+> 무료 서버라 한동안 접속이 없으면 잠들어, 첫 접속에 1분쯤 걸릴 수 있습니다. 직접 실행하는 방법은 [아래](#실행-방법)에 있습니다.
+
 ## 한눈에 보기
 
 AERON은 정비 지식·AI·로봇·기존 시스템을 하나로 이어, 작업 지시부터 기록까지를 관리하는 항공정비 작업 실행 운영체계다. 정비사가 판정하고, AI와 로봇은 찾기·촬영·기록 같은 주변 공수를 맡는다.
@@ -296,6 +300,79 @@ PoC에서는 ⓪~④과 수리 승인까지 구현하고, ⑤의 완결성 게�
 - 로봇은 가상 검사 셀 시뮬레이션으로 검증했고, 실기 촬영 품질은 아직 측정하지 않았다.
 - 완결성 게이트(Work Card 필수 항목 검사)는 설계에만 반영됐다.
 - 지식그래프는 공개 데이터(FAA)만 썼다. 대한항공 내부 교범·이력을 연결하는 것은 다음 단계다.
+
+## 실행 방법
+
+### 공개 데모
+
+**https://aeron-vadw.onrender.com** — Render(웹서버) + Neo4j Aura Free(지식그래프)로 띄운 데모다.
+
+- 접속이 15분 없으면 서버가 잠들어, 첫 접속에 1분쯤 걸린다.
+- 작업 진행 상태는 서버 메모리에 있어 접속한 사람끼리 같은 화면을 공유하고, 서버가 다시 깨면 처음 상태로 돌아간다.
+- LLM 키를 넣지 않아 챗봇은 지식그래프 기반 규칙 답변으로 동작한다.
+
+### 저장소 구성
+
+| 폴더 | 내용 |
+| --- | --- |
+| `web/` | 웹앱 — 로그인 · 정비사 AI Copilot · 관리자 대시보드 (Node, 외부 의존성 없음) |
+| `kg/` | Neo4j 지식그래프 재구축 스크립트와 검증 |
+| `robot-sim/` | Moby + Indy7 블레이드 검사 시뮬레이션 (Python 3.11, PyBullet) |
+| `data/` | FAA SDR 2026, JASC 코드표 |
+| `docs/` | 아키텍처, 데이터 정의서, 시나리오, 판단 규칙, 자료 출처 |
+
+### 로컬에서 실행
+
+필요: Node.js 18 이상, Docker Desktop
+
+1. 저장소 루트에 `.env` 파일을 만든다. 아래가 로컬 Docker 기본값이다(`.env`는 깃에 올라가지 않는다).
+
+   ```env
+   NEO4J_URI=http://localhost:7474
+   NEO4J_USER=neo4j
+   NEO4J_PW=aeron-local-pw
+   NEO4J_DATABASE=neo4j
+   PORT=5173
+
+   # 챗봇 LLM (선택) — 비워 두면 지식그래프 기반 규칙 답변
+   LLM_PROVIDER=
+   ANTHROPIC_API_KEY=
+   GEMINI_API_KEY=
+   ```
+
+2. Neo4j를 띄우고, 지식그래프를 만든 뒤, 웹서버를 실행한다.
+
+   ```bash
+   docker compose up -d --wait
+   node kg/build_all.js
+   node web/server.js
+   ```
+
+3. 브라우저에서 http://localhost:5173 을 열고 정비사나 관리자로 로그인한다.
+
+`node kg/build_all.js`는 그래프를 다시 만든 뒤 검증까지 한다. 라벨 21 · 관계 23 · CQ-1~6이 모두 통과하고, 노드 1,328 · 관계 2,440이 나오면 정상이다(발표 시점 Aura는 1,473 · 2,674 — 원 팀의 적재 파일 없이 같은 공개 데이터로 다시 만들어 차이가 난다. [`docs/sources.md`](docs/sources.md) 참고). 검증만 다시 하려면 `node kg/verify.js`.
+
+### Neo4j Aura로 실행·배포
+
+1. [Neo4j Aura](https://console.neo4j.io)에서 AuraDB Free 인스턴스를 만들고 접속 정보 파일을 받는다.
+2. `.env`의 Neo4j 네 줄을 Aura 값으로 바꾼다. `NEO4J_URI`는 `neo4j+s://…`를 `https://…`로 바꿔 넣는다(HTTP Query API로 접속한다). `NEO4J_USER`·`NEO4J_DATABASE`는 접속 정보 파일의 값(최근 인스턴스는 인스턴스 ID)을 쓴다.
+3. `node kg/build_all.js`로 Aura에 그래프를 올린다.
+4. [Render](https://render.com)에서 이 저장소로 Web Service를 만든다.
+
+   | 항목 | 값 |
+   | --- | --- |
+   | Language | Node |
+   | Root Directory | `web` |
+   | Build Command | `npm install` |
+   | Start Command | `npm start` |
+   | Instance Type | Free |
+   | Environment Variables | `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PW`, `NEO4J_DATABASE` (2번과 같은 값) |
+
+공개 링크에는 LLM 키를 넣지 않는다. 누구나 챗봇을 쓸 수 있어 요금이 나갈 수 있다. Aura Free는 쓰기 쿼리가 3일 없으면 일시정지되므로, 시연 전에 [콘솔](https://console.neo4j.io)에서 Resume 한다.
+
+### 로봇 시뮬레이션
+
+Windows에서는 Docker로 실행한다(PyPI에 Windows용 pybullet 배포본이 없다). 방법은 [`robot-sim/README.md`](robot-sim/README.md)를 본다. 경로에 한글이 있으면 3D 모델이 로드되지 않는다.
 
 ## 근거 자료
 
